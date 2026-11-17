@@ -1,0 +1,20 @@
+# One-file deploy for Render (https://render.com). In the Render dashboard:
+#   New + → Blueprint → pick this repository.
+# It builds the Dockerfile, runs it on the free plan, and asks you for DATABASE_URL.
+# Use a free Postgres from Neon (https://neon.tech) for DATABASE_URL: the app's own
+# disk is wiped on every deploy, so the data must live in a real database.
+#
+# Nothing else to configure:
+#   - the public URL is picked up from Render automatically
+#   - signup is invite-only in production (the first account you create is the owner)
+services:
+  - type: web
+    name: tandem
+    runtime: docker
+    plan: free
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false

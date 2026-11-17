@@ -1,0 +1,31 @@
+# The production shape on one machine: the app plus a real Postgres.
+#   docker compose up --build   →  http://localhost:8787
+services:
+  app:
+    build: .
+    ports:
+      - "8787:8787"
+    environment:
+      DATABASE_URL: postgres://tandem:tandem@db:5432/tandem
+      # Set this to the address people actually use, e.g. https://tandem.example.com
+      PUBLIC_URL: ${PUBLIC_URL:-http://localhost:8787}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: tandem
+      POSTGRES_PASSWORD: tandem
+      POSTGRES_DB: tandem
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tandem"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:
