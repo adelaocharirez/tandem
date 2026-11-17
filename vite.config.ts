@@ -13,6 +13,8 @@ export default defineConfig({
     proxy: {
       '/api': 'http://localhost:8787',
       '/mcp': 'http://localhost:8787',
+      '/setup.js': 'http://localhost:8787',
+      '/healthz': 'http://localhost:8787',
       '/ws': { target: 'ws://localhost:8787', ws: true },
     },
   },
